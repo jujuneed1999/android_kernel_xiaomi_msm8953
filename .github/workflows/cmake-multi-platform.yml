@@ -23,10 +23,16 @@ jobs:
         echo "SUBARCH=arm64" >> $GITHUB_ENV
         echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
 
-    - name: Ensure Environment Path
+    - name: Clone Proton Clang (v13)
       run: |
-        echo "/usr/bin" >> $GITHUB_PATH
+        git clone --depth=1 https://github.com/kdrag0n/proton-clang.git -b master clang
 
+    - name: Set Clang Environment
+      run: |
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CLANG_TRIPLE=aarch64-linux-gnu-" >> $GITHUB_ENV
+        echo "PATH=$GITHUB_WORKSPACE/clang/bin:$PATH" >> $GITHUB_ENV
+        
     - name: Configure Kernel (tiffany_defconfig)
       run: |
         make O=out tiffany_defconfig
