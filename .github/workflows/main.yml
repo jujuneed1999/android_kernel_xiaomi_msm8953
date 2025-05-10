@@ -42,6 +42,7 @@ jobs:
           cd "${WORKDIR}/toolchains/gcc"
           curl -LO "https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz"
           tar -xf arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+          export CROSS_COMPILE_ARM32="${KERNEL_ROOT}/toolchains/gcc/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin/arm-none-eabi-"
         fi
 
     - name: Build Kernel
