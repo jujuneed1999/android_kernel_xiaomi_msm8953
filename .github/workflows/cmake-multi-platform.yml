@@ -80,7 +80,7 @@ jobs:
         build_kernel(){
             # Make default configuration.
             # Replace 'your_defconfig' with the name of your kernel's defconfig
-            make ${BUILD_OPTIONS} your_defconfig
+            make ${BUILD_OPTIONS} lineage_tiffany_defconfig
             # Configure the kernel (GUI)
             make ${BUILD_OPTIONS} menuconfig
             # Build the kernel
