@@ -17,6 +17,7 @@ jobs:
       run: |
         git submodule init && git submodule update
         export KERNEL_ROOT="$(pwd)"
+        export HOME="$(pwd)"
         export ARCH=arm64
         export KBUILD_BUILD_USER="@juneed"
 
