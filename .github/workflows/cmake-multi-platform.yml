@@ -15,13 +15,17 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y bc bison flex libssl-dev make libc6-dev libncurses5-dev \
-          crossbuild-essential-arm64 gcc-aarch64-linux-gnu git wget
-
+          crossbuild-essential-arm64 gcc-aarch64-linux-gnu binutils git wget
+          
     - name: Set Environment Variables
       run: |
         echo "ARCH=arm64" >> $GITHUB_ENV
         echo "SUBARCH=arm64" >> $GITHUB_ENV
         echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+
+    - name: Ensure Environment Path
+      run: |
+        echo "/usr/bin" >> $GITHUB_PATH
 
     - name: Configure Kernel (tiffany_defconfig)
       run: |
