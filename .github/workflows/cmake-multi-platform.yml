@@ -31,7 +31,7 @@ jobs:
 
     - name: Create necessary directories
       run: |
-        mkdir -p "${KERNEL_ROOT}/out" "${KERNEL_ROOT}/build" "${HOME}/toolchains"
+        sudo mkdir -p "${KERNEL_ROOT}/out" "${KERNEL_ROOT}/build" "${HOME}/toolchains"
 
     - name: init clang-r353983c
       run: |
