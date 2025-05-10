@@ -75,6 +75,14 @@ jobs:
         CLANG_TRIPLE=aarch64-linux-gnu- \
         "
 
+    - name: check pwd
+      run: |
+        pwd
+
+    - name: check ls
+      run: |
+        ls
+        
     - name: build
       run: |
         build_kernel(){
