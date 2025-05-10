@@ -1,8 +1,9 @@
 name: test
-workflow_dispatch:                                  # Allow to manually trigger workflow.
+on:
+    workflow_dispatch:                                  # Allow to manually trigger workflow.
 jobs:
   build:
-    name: "Build Dark Ages kernel"
+    name: "test"
     runs-on: ubuntu-latest
     steps:
     - name: "Checkout kernel source"                  # Clone the kernel source.
