@@ -1,53 +1,53 @@
-name: Build Kernel for Tiffany (Mi 5X)
+name: Build Kernel for Tiffany
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
+    name: Compile Kernel
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Kernel Source
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Install Dependencies
       run: |
         sudo apt update
-        sudo apt install -y bc bison flex libssl-dev make libc6-dev libncurses5-dev \
-          crossbuild-essential-arm64 gcc-aarch64-linux-gnu binutils git wget
-          
-    - name: Set Environment Variables
-      run: |
-        echo "ARCH=arm64" >> $GITHUB_ENV
-        echo "SUBARCH=arm64" >> $GITHUB_ENV
-        echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+        sudo apt install -y git device-tree-compiler lz4 xz-utils zlib1g-dev openjdk-17-jdk \
+        gcc g++ python3 python-is-python3 p7zip-full android-sdk-libsparse-utils erofs-utils \
+        default-jdk git gnupg flex bison gperf build-essential zip curl libc6-dev libncurses-dev \
+        libx11-dev libreadline-dev libgl1 libgl1-mesa-dev python3 make sudo gcc g++ bc grep \
+        tofrodos python3-markdown libxml2-utils xsltproc zlib1g-dev python-is-python3 libc6-dev \
+        libtinfo6 make repo cpio kmod openssl libelf-dev pahole libssl-dev libarchive-tools zstd --fix-missing
 
-    - name: Clone Proton Clang (v13)
-      run: |
-        git clone --depth=1 https://github.com/kdrag0n/proton-clang.git -b master clang
+        wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+        sudo dpkg -i libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
-    - name: Set Clang Environment
+    - name: Download Linaro GCC 7.5 Toolchain
       run: |
-        echo "CC=clang" >> $GITHUB_ENV
-        echo "CLANG_TRIPLE=aarch64-linux-gnu-" >> $GITHUB_ENV
-        echo "PATH=$GITHUB_WORKSPACE/clang/bin:$PATH" >> $GITHUB_ENV
-        
-    - name: Configure Kernel (tiffany_defconfig)
+        wget https://github.com/ravindu644/Android-Kernel-Tutorials/releases/download/toolchains/linaro-aarch64-7.5.tar.xz
+        tar -xf linaro-aarch64-7.5.tar.xz
+        echo "$GITHUB_WORKSPACE/linaro-aarch64-7.5/bin" >> $GITHUB_PATH
+
+    - name: Make Output Directory
+      run: mkdir out
+
+    - name: Configure Kernel
       run: |
-        make O=out tiffany_defconfig
+        make O=out ARCH=arm64 tiffany_defconfig \
+        CROSS_COMPILE=aarch64-linux-gnu- \
+        CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
     - name: Build Kernel
       run: |
-        make -j$(nproc) O=out
+        make -j$(nproc) O=out ARCH=arm64 \
+        CROSS_COMPILE=aarch64-linux-gnu- \
+        CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
-    - name: Collect Output
-      run: |
-        mkdir -p output
-        cp out/arch/arm64/boot/Image.gz-dtb output/ || echo "Image.gz-dtb not found"
-
-    - name: Upload Artifact
+    - name: Upload Kernel Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: tiffany-kernel
-        path: output/
+        name: zImage-dtb
+        path: out/arch/arm64/boot/Image.gz-dtb
